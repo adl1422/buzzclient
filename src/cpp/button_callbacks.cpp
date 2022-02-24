@@ -1,6 +1,7 @@
 #include "../hpp/buttons_callbacks.hpp"
 StaticJsonDocument<96> doc;
 String jsonData;
+extern bool inGame;
 
 void setMessage(String message)
 {
@@ -9,6 +10,7 @@ void setMessage(String message)
     if (currentMode == START)
     {
         doc["message"] = "Press";
+        inGame = true;
     }
     else if (currentMode == GAME)
     {
@@ -17,6 +19,7 @@ void setMessage(String message)
     else
     {
         doc["message"] = "None";
+        inGame = false;
     }
 
     serializeJson(doc, jsonData);

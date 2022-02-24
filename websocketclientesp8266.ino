@@ -15,6 +15,7 @@ Button2 btnB(BTN_B, INPUT_PULLUP, 50);
 Button2 btnC(BTN_C, INPUT_PULLUP, 50);
 Button2 btnD(BTN_D, INPUT_PULLUP, 50);
 
+bool inGame = false;
 Mode currentMode = NONE;
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
@@ -45,7 +46,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             // return;
         }
 
-
         if (doc["id"] == "admin")
         {
             if (doc["message"] == "start")
@@ -55,13 +55,17 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             }
             if (doc["message"] == "game")
             {
-                currentMode = GAME;
-                setColor(BLUE);
+                if (inGame)
+                {
+                    currentMode = GAME;
+                    setColor(BLUE);
+                }
             }
             else if (doc["message"] == "reset")
             {
                 currentMode = NONE;
                 setColor(GREEN);
+                inGame = false;
             }
             else
             {
@@ -76,7 +80,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                     {
                         setColor(RED);
                     }
-                    else if(doc["message"] == "OK")
+                    else if (doc["message"] == "OK")
                     {
                         setColor(YELLOW);
                     }
