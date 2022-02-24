@@ -15,28 +15,23 @@ Button2 btnB(BTN_B, INPUT_PULLUP, 50);
 Button2 btnC(BTN_C, INPUT_PULLUP, 50);
 Button2 btnD(BTN_D, INPUT_PULLUP, 50);
 
-
 Mode currentMode = NONE;
-
-String getMacAddress()
-{
-    return String(WiFi.macAddress());
-}
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
     StaticJsonDocument<96> doc;
     DeserializationError error = deserializeJson(doc, payload);
+    String expected_answer = String();
     switch (type)
     {
     case WStype_DISCONNECTED:
         Serial.printf("[WSc] Disconnected!\n");
-        setColor(ORANGE); //Déconnecté du websocket -> orange
+        setColor(ORANGE); // Déconnecté du websocket -> orange
         break;
     case WStype_CONNECTED:
     {
         Serial.printf("[WSc] Connected to url: %s\n", payload);
-        setColor(GREEN); //Connecté au websocket -> vert
+        setColor(GREEN); // Connecté au websocket -> vert
         // webSocket.sendTXT("{\"message\": \"Connect\", \"id\":\"" + getMacAddress() + "\"}");
     }
     break;
@@ -50,10 +45,8 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             Serial.println(error.c_str());
             // return;
         }
-        Serial.print("id : ");
-        Serial.println(doc["id"].as<String>());
-        Serial.print("message : ");
-        Serial.println(doc["message"].as<String>());
+
+
         if (doc["id"] == "admin")
         {
             if (doc["message"] == "start")
@@ -68,9 +61,23 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             {
                 currentMode = NONE;
             }
+            else
+            {
+                if (doc["player_id"] == String(WiFi.macAddress()))
+                {
+                    if (doc["message"] == "good")
+                    {
+
+                        setColor(GREEN);
+                    }
+                    else if (doc["message"] == "bad")
+                    {
+                        setColor(RED);
+                    }
+                }
+            }
         }
-        Serial.print("Current mode : ");
-        Serial.println(currentMode);
+
         // webSocket.sendTXT("{\"message\": \"How are you ?\"}");
         // send message to server
         // webSocket.sendTXT("message here");
@@ -93,57 +100,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     }
 }
 
-void click(Button2 &btn)
-{
-    for (size_t i = 0; i < NUMPIXELS; i++)
-    {
-        if (i % 4 == 0)
-        {
-            pixels.setPixelColor(i, pixels.Color(0, 255, 0));
-            pixels.show();
-        }
-    }
-    Serial.println("Button pressed");
-    StaticJsonDocument<64> doc;
-    doc["id"] = getMacAddress();
-    if (currentMode == START)
-    {
-        doc["message"] = "Press";
-    }
-    else if (currentMode == GAME)
-    {
-        doc["message"] = "1";
-    }
-    else
-    {
-        doc["message"] = "None";
-    }
-
-    String jsonData;
-    serializeJson(doc, jsonData);
-    Serial.println(jsonData);
-    webSocket.sendTXT(jsonData);
-    // webSocket.sendTXT("{\"message\": \"Press\", \"id\":\"" + getMacAddress() + "\"}");
-}
-
-void long_click(Button2 &btn)
-{
-    StaticJsonDocument<64> doc;
-    doc["id"] = getMacAddress();
-    if (currentMode == START)
-    {
-        doc["message"] = "long Press";
-    }
-    else if (currentMode == GAME)
-    {
-        doc["message"] = "2";
-    }
-
-    String jsonData;
-    serializeJson(doc, jsonData);
-    webSocket.sendTXT(jsonData);
-}
-
 void setup()
 {
     Serial.begin(115200);
@@ -154,7 +110,7 @@ void setup()
     int count = 0;
     while (WiFi.status() != WL_CONNECTED)
     {
-        
+
         if (count % 2 == 0)
         {
             setColor(RED);
@@ -167,11 +123,11 @@ void setup()
         Serial.print('.');
         delay(500);
     }
-    setColor(ORANGE); //On est connecté au wifi -> orange
+    setColor(ORANGE); // On est connecté au wifi -> orange
 
     Serial.print("Ip : ");
     Serial.println(WiFi.localIP());
-    webSocket.begin("192.168.1.11", 8080, "/ws/pads/");
+    webSocket.begin("192.168.1.9", 80, "/ws/pads/");
 
     // event handler
     webSocket.onEvent(webSocketEvent);

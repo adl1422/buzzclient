@@ -3,6 +3,8 @@
 #include <Button2.h>
 #include <Adafruit_NeoPixel.h>
 #include <WebSocketsClient.h>
+#include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
 #include "../hpp/pixels.hpp"
 #include "../hpp/defines.h"
 
