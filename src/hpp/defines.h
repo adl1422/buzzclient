@@ -1,9 +1,19 @@
 #ifndef DEFINES_H
 #define DEFINES_H
+//Wifi
+#define SSID "WLanHome"
+#define PASS "456Pazertyuio"
 
+//WebClient
+#define HOST "192.168.1.9"
+#define PORT 80
+
+//WS2812b
 #define NUMPIXELS 16
 #define PIXELPIN 2
+//modulo pour 1 led/ 4
 #define MODULOLEDS 4
+//Pins boutons
 #define BTN_A 0
 #define BTN_B 12
 #define BTN_C 14

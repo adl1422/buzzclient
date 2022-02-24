@@ -125,7 +125,7 @@ void setup()
     pixels.begin();
     pixels.setBrightness(25);
 
-    WiFi.begin("WLanHome", "456Pazertyuio");
+    WiFi.begin(SSID, PASS);
     int count = 0;
     while (WiFi.status() != WL_CONNECTED)
     {
@@ -146,7 +146,7 @@ void setup()
 
     Serial.print("Ip : ");
     Serial.println(WiFi.localIP());
-    webSocket.begin("192.168.1.9", 80, "/ws/pads/");
+    webSocket.begin(HOST, PORT, "/ws/pads/");
 
     // event handler
     webSocket.onEvent(webSocketEvent);
