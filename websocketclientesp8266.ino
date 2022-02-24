@@ -21,7 +21,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
     StaticJsonDocument<96> doc;
     DeserializationError error = deserializeJson(doc, payload);
-    String expected_answer = String();
     switch (type)
     {
     case WStype_DISCONNECTED:
@@ -37,7 +36,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     break;
     case WStype_TEXT:
         // Serial.printf("[WSc] get text: %s\n", payload);
-        Serial.println("[WSc] get text : ");
+        // Serial.println("[WSc] get text : ");
 
         if (error)
         {
@@ -52,14 +51,17 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             if (doc["message"] == "start")
             {
                 currentMode = START;
+                setColor(BLACK);
             }
             if (doc["message"] == "game")
             {
                 currentMode = GAME;
+                setColor(BLUE);
             }
             else if (doc["message"] == "reset")
             {
                 currentMode = NONE;
+                setColor(GREEN);
             }
             else
             {
@@ -73,6 +75,10 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                     else if (doc["message"] == "bad")
                     {
                         setColor(RED);
+                    }
+                    else if(doc["message"] == "OK")
+                    {
+                        setColor(YELLOW);
                     }
                 }
             }

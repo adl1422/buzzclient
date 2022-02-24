@@ -15,6 +15,7 @@
 #define BLUE 0,0,255
 #define ORANGE 255,127,0
 #define BLACK 0,0,0
+#define YELLOW 255,255,0
 
 enum Mode
 {
