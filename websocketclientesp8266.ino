@@ -3,17 +3,18 @@
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 #include <Adafruit_NeoPixel.h>
+#include "src/hpp/buttons_callbacks.hpp"
+#include "src/hpp/pixels.hpp"
+#include "src/hpp/defines.h"
 
 WebSocketsClient webSocket;
+Adafruit_NeoPixel pixels(NUMPIXELS, PIXELPIN, NEO_GRB + NEO_KHZ800);
 bool started = false;
-Button2 btn(13, INPUT_PULLUP, 30);
+Button2 btnA(BTN_A, INPUT_PULLUP, 50);
+Button2 btnB(BTN_B, INPUT_PULLUP, 50);
+Button2 btnC(BTN_C, INPUT_PULLUP, 50);
+Button2 btnD(BTN_D, INPUT_PULLUP, 50);
 
-enum Mode
-{
-    NONE,
-    START,
-    GAME
-};
 
 Mode currentMode = NONE;
 
@@ -30,12 +31,12 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     {
     case WStype_DISCONNECTED:
         Serial.printf("[WSc] Disconnected!\n");
+        setColor(ORANGE); //Déconnecté du websocket -> orange
         break;
     case WStype_CONNECTED:
     {
         Serial.printf("[WSc] Connected to url: %s\n", payload);
-
-        // send message to server when Connected
+        setColor(GREEN); //Connecté au websocket -> vert
         // webSocket.sendTXT("{\"message\": \"Connect\", \"id\":\"" + getMacAddress() + "\"}");
     }
     break;
@@ -94,10 +95,18 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 
 void click(Button2 &btn)
 {
+    for (size_t i = 0; i < NUMPIXELS; i++)
+    {
+        if (i % 4 == 0)
+        {
+            pixels.setPixelColor(i, pixels.Color(0, 255, 0));
+            pixels.show();
+        }
+    }
     Serial.println("Button pressed");
     StaticJsonDocument<64> doc;
     doc["id"] = getMacAddress();
-    if(currentMode == START)
+    if (currentMode == START)
     {
         doc["message"] = "Press";
     }
@@ -109,9 +118,7 @@ void click(Button2 &btn)
     {
         doc["message"] = "None";
     }
-    
-    
-    
+
     String jsonData;
     serializeJson(doc, jsonData);
     Serial.println(jsonData);
@@ -123,7 +130,7 @@ void long_click(Button2 &btn)
 {
     StaticJsonDocument<64> doc;
     doc["id"] = getMacAddress();
-        if(currentMode == START)
+    if (currentMode == START)
     {
         doc["message"] = "long Press";
     }
@@ -140,27 +147,46 @@ void long_click(Button2 &btn)
 void setup()
 {
     Serial.begin(115200);
+    pixels.begin();
+    pixels.setBrightness(25);
+
     WiFi.begin("WLanHome", "456Pazertyuio");
+    int count = 0;
     while (WiFi.status() != WL_CONNECTED)
     {
+        
+        if (count % 2 == 0)
+        {
+            setColor(RED);
+        }
+        else
+        {
+            setColor(BLACK);
+        }
+        ++count;
         Serial.print('.');
         delay(500);
     }
+    setColor(ORANGE); //On est connecté au wifi -> orange
 
     Serial.print("Ip : ");
     Serial.println(WiFi.localIP());
-    webSocket.begin("192.168.1.10", 8080, "/ws/pads/");
+    webSocket.begin("192.168.1.11", 8080, "/ws/pads/");
 
     // event handler
     webSocket.onEvent(webSocketEvent);
-    btn.setClickHandler(click);
-    btn.setLongClickHandler(long_click);
+    btnA.setClickHandler(btnA_click);
+    btnB.setClickHandler(btnB_click);
+    btnC.setClickHandler(btnC_click);
+    btnD.setClickHandler(btnD_click);
 }
 
 void loop()
 {
-    
-    btn.loop();
-    webSocket.loop();
 
+    btnA.loop();
+    btnB.loop();
+    btnC.loop();
+    btnD.loop();
+    webSocket.loop();
 }
