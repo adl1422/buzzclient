@@ -71,7 +71,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             {
                 if (doc["player_id"] == String(WiFi.macAddress()))
                 {
-                    if (doc["message"] == "good")
+                    if (doc["message"] == "good" || doc["message"] == "faster")
                     {
 
                         setColor(GREEN);
@@ -85,6 +85,15 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                         setColor(YELLOW);
                     }
                 }
+                else
+                {
+                    if(doc["message"] == "faster")
+                    {
+                        if(inGame)
+                            setColor(RED);
+                    }
+                }
+                
             }
         }
 
