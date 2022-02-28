@@ -1,5 +1,5 @@
 #include "../hpp/buttons_callbacks.hpp"
-StaticJsonDocument<96> doc;
+StaticJsonDocument<128> doc;
 String jsonData;
 extern bool inGame;
 
@@ -7,6 +7,7 @@ void setMessage(String message)
 {
     doc["id"] = String(WiFi.macAddress());
     doc["player_id"] = String();
+    doc["score"] = 0;
     if (currentMode == START)
     {
         doc["message"] = "Press";
@@ -24,7 +25,7 @@ void setMessage(String message)
 
     serializeJson(doc, jsonData);
     webSocket.sendTXT(jsonData);
-    Serial.println(jsonData);
+    // Serial.println(jsonData);
     jsonData = String();
 }
 void btnA_click(Button2 &button)
