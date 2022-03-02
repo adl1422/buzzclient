@@ -37,7 +37,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     break;
     case WStype_TEXT:
         // Serial.printf("[WSc] get text: %s\n", payload);
-        
+
         // Serial.println("[WSc] get text : ");
 
         if (error)
@@ -68,6 +68,15 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 setColor(GREEN);
                 inGame = false;
             }
+
+            else if (doc["message"] == "new_quest")
+            {
+                if (inGame)
+                {
+                    currentMode = GAME;
+                    setColor(BLUE);
+                }
+            }
             else
             {
                 if (doc["player_id"] == String(WiFi.macAddress()))
@@ -88,13 +97,12 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 }
                 else
                 {
-                    if(doc["message"] == "faster")
+                    if (doc["message"] == "faster")
                     {
-                        if(inGame)
+                        if (inGame)
                             setColor(RED);
                     }
                 }
-                
             }
         }
 
