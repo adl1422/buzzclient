@@ -78,7 +78,9 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 if (inGame)
                 {
                     currentMode = GAME;
-                    setColor(BLUE);
+                    setColor(BLACK);
+                    delay(500);
+                    setColor(myColor.r(), myColor.g(), myColor.b());
                 }
             }
             else if (doc["message"] == "reset")
