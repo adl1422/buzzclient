@@ -6,6 +6,7 @@
 #include "src/hpp/buttons_callbacks.hpp"
 #include "src/hpp/pixels.hpp"
 #include "src/hpp/defines.h"
+#include "src/hpp/color.hpp"
 
 WebSocketsClient webSocket;
 Adafruit_NeoPixel pixels(NUMPIXELS, PIXELPIN, NEO_GRB + NEO_KHZ800);
@@ -15,12 +16,15 @@ Button2 btnB(BTN_B, INPUT_PULLUP, 50);
 Button2 btnC(BTN_C, INPUT_PULLUP, 50);
 Button2 btnD(BTN_D, INPUT_PULLUP, 50);
 
+Color colors[5];
+
 bool inGame = false;
 Mode currentMode = NONE;
-
+Color myColor;
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
-    StaticJsonDocument<96> doc;
+    StaticJsonDocument<256> doc;
+
     DeserializationError error = deserializeJson(doc, payload);
     switch (type)
     {
@@ -39,7 +43,22 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         // Serial.printf("[WSc] get text: %s\n", payload);
 
         // Serial.println("[WSc] get text : ");
-
+        Serial.print("I am");
+        Serial.println(String(WiFi.macAddress()));
+        Serial.print("id : ");
+        Serial.print(doc["id"].as<String>());
+        Serial.print(", player_id : ");
+        Serial.print(doc["player_id"].as<String>());
+        Serial.print(", message : ");
+        Serial.print(doc["message"].as<String>());
+        Serial.print(", score : ");
+        Serial.print(doc["score"].as<int>());
+        Serial.print(", r : ");
+        Serial.print(doc["color_r"].as<uint8_t>());
+        Serial.print(", g : ");
+        Serial.print(doc["color_g"].as<uint8_t>());
+        Serial.print(", b : ");
+        Serial.println(doc["color_b"].as<uint8_t>());
         if (error)
         {
             Serial.print("Erreur deserialisation : ");
@@ -74,7 +93,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 if (inGame)
                 {
                     currentMode = GAME;
-                    setColor(BLUE);
+                    setColor(myColor.r(), myColor.g(), myColor.b());
                 }
             }
             else
@@ -92,7 +111,15 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                     }
                     else if (doc["message"] == "OK")
                     {
-                        setColor(YELLOW);
+                        // Serial.print("Couleur r : ");
+                        // Serial.print(doc["color_r"].as<int>());
+                        // Serial.print(" Couleur g : ");
+                        // Serial.print(doc["color_g"].as<int>());
+                        // Serial.print(" Couleur b : ");
+                        // Serial.print(doc["color_b"].as<int>());
+                        // Serial.println();
+                        myColor = Color("myColor",doc["color_r"].as<uint8_t>(),doc["color_g"].as<uint8_t>(),doc["color_b"].as<uint8_t>() );
+                        setColor(myColor.r(), myColor.g(), myColor.b());
                     }
                 }
                 else
@@ -131,6 +158,13 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 void setup()
 {
     Serial.begin(115200);
+    // /!\ Maintenir l'ordre des couleurs car lié aux idx du tableau client 
+
+    colors[0] = Color("RedRuby", REDRUBY);
+    colors[1] = Color("BlueLavender", BLUELAVENDER);
+    colors[2] = Color("Turquoise", TURQUOISE);
+    colors[3] = Color("Purple", PURPLE);
+    colors[4] = Color("PurpleDark", PURPLEDARK);
     pixels.begin();
     pixels.setBrightness(25);
 
