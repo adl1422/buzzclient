@@ -1,6 +1,5 @@
 #ifndef BTN_CALLBACKS_HPP
 #define BTN_CALLBACKS_HPP
-#include <Button2.h>
 #include <Adafruit_NeoPixel.h>
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
@@ -12,10 +11,10 @@ extern Adafruit_NeoPixel pixels;
 extern WebSocketsClient webSocket;
 extern Mode currentMode;
 
-void btnA_click(Button2 &button);
-void btnB_click(Button2 &button);
-void btnC_click(Button2 &button);
-void btnD_click(Button2 &button);
+void btnA_click();
+void btnB_click();
+void btnC_click();
+void btnD_click();
 
 
 

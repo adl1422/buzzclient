@@ -34,19 +34,21 @@ void setMessage(String message)
     // Serial.println(currentMode);
     jsonData = String();
 }
-void btnA_click(Button2 &button)
+void btnA_click()
 {
     setMessage("a");
+    // Serial.println("a clicked");
 }
-void btnB_click(Button2 &button)
+void btnB_click()
 {
     setMessage("b");
+    // Serial.println("b clicked");
 }
-void btnC_click(Button2 &button)
+void btnC_click()
 {
     setMessage("c");
 }
-void btnD_click(Button2 &button)
+void btnD_click()
 {
     setMessage("d");
 }

@@ -1,5 +1,4 @@
 #include <ESP8266WiFi.h>
-#include <Button2.h>
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 #include <Adafruit_NeoPixel.h>
@@ -7,14 +6,16 @@
 #include "src/hpp/pixels.hpp"
 #include "src/hpp/defines.h"
 #include "src/hpp/color.hpp"
+#include "src/hpp/ButtonBase.hpp"
 
 WebSocketsClient webSocket;
 Adafruit_NeoPixel pixels(NUMPIXELS, PIXELPIN, NEO_GRB + NEO_KHZ800);
 bool started = false;
-Button2 btnA(BTN_A, INPUT_PULLUP, 50);
-Button2 btnB(BTN_B, INPUT_PULLUP, 50);
-Button2 btnC(BTN_C, INPUT_PULLUP, 50);
-Button2 btnD(BTN_D, INPUT_PULLUP, 50);
+
+ButtonBase btnA(BTN_A);
+ButtonBase btnB(BTN_B);
+ButtonBase btnC(BTN_C);
+ButtonBase btnD(BTN_D);
 
 Color colors[5];
 
@@ -195,18 +196,20 @@ void setup()
 
     // event handler
     webSocket.onEvent(webSocketEvent);
-    btnA.setClickHandler(btnA_click);
-    btnB.setClickHandler(btnB_click);
-    btnC.setClickHandler(btnC_click);
-    btnD.setClickHandler(btnD_click);
+
+    btnA.on_click(btnA_click);
+    btnB.on_click(btnB_click);
+    btnC.on_click(btnC_click);
+    btnD.on_click(btnD_click);
 }
 
 void loop()
 {
 
-    btnA.loop();
-    btnB.loop();
-    btnC.loop();
-    btnD.loop();
+    btnA.read();
+    btnB.read();
+    btnC.read();
+    btnD.read();
     webSocket.loop();
 }
+
