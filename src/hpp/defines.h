@@ -5,8 +5,8 @@
 #define PASS "456Pazertyuio"
 
 //WebClient
-#define HOST "192.168.1.9"
-#define PORT 80
+#define HOST "192.168.1.11"
+#define PORT 8080
 
 //WS2812b
 #define NUMPIXELS 16

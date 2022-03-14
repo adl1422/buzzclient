@@ -2,7 +2,6 @@
 StaticJsonDocument<256> doc;
 String jsonData;
 extern bool inGame;
-
 void setMessage(String message)
 {
     doc["id"] = String(WiFi.macAddress());
@@ -29,20 +28,17 @@ void setMessage(String message)
 
     serializeJson(doc, jsonData);
     webSocket.sendTXT(jsonData);
-    // Serial.println(jsonData);
-    // Serial.print("Mode : ");
-    // Serial.println(currentMode);
     jsonData = String();
 }
 void btnA_click()
 {
     setMessage("a");
-    // Serial.println("a clicked");
+
 }
 void btnB_click()
 {
     setMessage("b");
-    // Serial.println("b clicked");
+
 }
 void btnC_click()
 {

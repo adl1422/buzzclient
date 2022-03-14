@@ -37,29 +37,10 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     {
         Serial.printf("[WSc] Connected to url: %s\n", payload);
         setColor(GREEN); // Connecté au websocket -> vert
-        // webSocket.sendTXT("{\"message\": \"Connect\", \"id\":\"" + getMacAddress() + "\"}");
     }
     break;
     case WStype_TEXT:
-        // Serial.printf("[WSc] get text: %s\n", payload);
-
-        // Serial.println("[WSc] get text : ");
-        Serial.print("I am");
-        Serial.println(String(WiFi.macAddress()));
-        Serial.print("id : ");
-        Serial.print(doc["id"].as<String>());
-        Serial.print(", player_id : ");
-        Serial.print(doc["player_id"].as<String>());
-        Serial.print(", message : ");
-        Serial.print(doc["message"].as<String>());
-        Serial.print(", score : ");
-        Serial.print(doc["score"].as<int>());
-        Serial.print(", r : ");
-        Serial.print(doc["color_r"].as<uint8_t>());
-        Serial.print(", g : ");
-        Serial.print(doc["color_g"].as<uint8_t>());
-        Serial.print(", b : ");
-        Serial.println(doc["color_b"].as<uint8_t>());
+ 
         if (error)
         {
             Serial.print("Erreur deserialisation : ");
@@ -114,13 +95,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                     }
                     else if (doc["message"] == "OK")
                     {
-                        // Serial.print("Couleur r : ");
-                        // Serial.print(doc["color_r"].as<int>());
-                        // Serial.print(" Couleur g : ");
-                        // Serial.print(doc["color_g"].as<int>());
-                        // Serial.print(" Couleur b : ");
-                        // Serial.print(doc["color_b"].as<int>());
-                        // Serial.println();
                         myColor = Color("myColor",doc["color_r"].as<uint8_t>(),doc["color_g"].as<uint8_t>(),doc["color_b"].as<uint8_t>() );
                         setColor(myColor.r(), myColor.g(), myColor.b());
                     }
@@ -136,24 +110,20 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
             }
         }
 
-        // webSocket.sendTXT("{\"message\": \"How are you ?\"}");
-        // send message to server
-        // webSocket.sendTXT("message here");
+
         break;
     case WStype_BIN:
         Serial.printf("[WSc] get binary length: %u\n", length);
         hexdump(payload, length);
 
-        // send data to server
-        // webSocket.sendBIN(payload, length);
         break;
     case WStype_PING:
         // pong will be send automatically
-        Serial.printf("[WSc] get ping\n");
+        // Serial.printf("[WSc] get ping\n");
         break;
     case WStype_PONG:
         // answer to a ping we send
-        Serial.printf("[WSc] get pong\n");
+        // Serial.printf("[WSc] get pong\n");
         break;
     }
 }
@@ -194,7 +164,6 @@ void setup()
     Serial.println(WiFi.localIP());
     webSocket.begin(HOST, PORT, "/ws/pads/");
 
-    // event handler
     webSocket.onEvent(webSocketEvent);
 
     btnA.on_click(btnA_click);

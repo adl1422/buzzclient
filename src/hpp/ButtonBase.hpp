@@ -13,7 +13,7 @@ private:
 
     int m_lastBtnState;
     unsigned long m_debounceTime;
-    int m_buttonState = HIGH; // A changer en fonction du pullup (on fera un begin() où setter ca)
+    int m_buttonState = HIGH;
     unsigned long m_lastPressed = 0;
     unsigned long m_totalTime = 0;
     CallbackFunction cb_click = NULL;
@@ -22,6 +22,7 @@ private:
 public:
     ButtonBase(unsigned int pin);
     ~ButtonBase(){};
+    bool isPressed();
     void on_click(CallbackFunction cb);
     void on_long_click(CallbackFunction cb);
     void read();

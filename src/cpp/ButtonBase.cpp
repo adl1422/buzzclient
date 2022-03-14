@@ -65,3 +65,8 @@ void ButtonBase::read()
     }
     m_lastBtnState = reading;
 }
+
+bool ButtonBase::isPressed()
+{
+    return !m_buttonState;
+}
