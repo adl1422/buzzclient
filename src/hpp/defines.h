@@ -1,11 +1,11 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 //Wifi
-#define SSID "WLanHome"
-#define PASS "456Pazertyuio"
+#define SSID "Buzz"
+#define PASS "password"
 
 //WebClient
-#define HOST "192.168.1.11"
+#define HOST "192.168.4.1"
 #define PORT 8080
 
 //WS2812b

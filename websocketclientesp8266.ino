@@ -30,7 +30,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     switch (type)
     {
     case WStype_DISCONNECTED:
-        Serial.printf("[WSc] Disconnected!\n");
+        // Serial.printf("[WSc] Disconnected!\n");
         setColor(ORANGE); // Déconnecté du websocket -> orange
         break;
     case WStype_CONNECTED:
@@ -140,7 +140,7 @@ void setup()
     colors[4] = Color("PurpleDark", PURPLEDARK);
     pixels.begin();
     pixels.setBrightness(25);
-
+    WiFi.mode(WIFI_STA);
     WiFi.begin(SSID, PASS);
     int count = 0;
     while (WiFi.status() != WL_CONNECTED)
