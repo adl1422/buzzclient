@@ -10,6 +10,7 @@
 extern Adafruit_NeoPixel pixels;
 extern WebSocketsClient webSocket;
 extern Mode currentMode;
+extern GameMode currentGameMode;
 
 void btnA_click();
 void btnB_click();

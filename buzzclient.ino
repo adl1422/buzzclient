@@ -21,6 +21,7 @@ Color colors[5];
 
 bool inGame = false;
 Mode currentMode = NONE;
+GameMode currentGameMode = QCM;
 Color myColor;
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
@@ -40,7 +41,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     }
     break;
     case WStype_TEXT:
- 
+
         if (error)
         {
             Serial.print("Erreur deserialisation : ");
@@ -50,6 +51,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 
         if (doc["id"] == "admin")
         {
+            currentGameMode = doc["game_mode"] == "QCM" ? QCM : QUICK;
             if (doc["message"] == "start")
             {
                 currentMode = START;
@@ -86,16 +88,23 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 {
                     if (doc["message"] == "good" || doc["message"] == "faster")
                     {
-
                         setColor(GREEN);
                     }
                     else if (doc["message"] == "bad")
                     {
                         setColor(RED);
                     }
+                    else if (doc["message"] == "then")
+                    {
+                        setColor(CYAN);
+                    }
+                    else if (doc["message"] == "partial")
+                    {
+                        setColor(ORANGE);
+                    }
                     else if (doc["message"] == "OK")
                     {
-                        myColor = Color("myColor",doc["color_r"].as<uint8_t>(),doc["color_g"].as<uint8_t>(),doc["color_b"].as<uint8_t>() );
+                        myColor = Color("myColor", doc["color_r"].as<uint8_t>(), doc["color_g"].as<uint8_t>(), doc["color_b"].as<uint8_t>());
                         setColor(myColor.r(), myColor.g(), myColor.b());
                     }
                 }
@@ -109,7 +118,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
                 }
             }
         }
-
 
         break;
     case WStype_BIN:
@@ -131,7 +139,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 void setup()
 {
     Serial.begin(115200);
-    // /!\ Maintenir l'ordre des couleurs car lié aux idx du tableau client 
+    // /!\ Maintenir l'ordre des couleurs car lié aux idx du tableau client
 
     colors[0] = Color("RedRuby", REDRUBY);
     colors[1] = Color("BlueLavender", BLUELAVENDER);
@@ -181,4 +189,3 @@ void loop()
     btnD.read();
     webSocket.loop();
 }
-
