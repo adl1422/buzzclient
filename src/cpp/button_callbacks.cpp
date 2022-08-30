@@ -14,6 +14,7 @@ void setMessage(String message)
     doc["color_b"] = 0;
     doc["game_mode"] = String();
     doc["player_number"] = 0;
+    doc["expected_answers"] = String();
 
     if (currentMode == START)
     {
